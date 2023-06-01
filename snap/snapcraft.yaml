@@ -1,0 +1,128 @@
+name: maya-2023
+base: core22
+version: '2023'
+summary: Autodesk Maya 2023
+description: Autodesk Maya 2023
+
+grade: stable
+confinement: strict
+
+layout:
+  /var/opt/Autodesk/AdskLicensingService/AdskLicensingService.data:
+    bind-file: $SNAP/var/opt/Autodesk/AdskLicensingService/AdskLicensingService.data
+
+package-repositories:
+ - type: apt
+   ppa: zeehio/libxp
+
+hooks:
+  install:
+    plugs: [home]
+  
+environment:
+  LD_LIBRARY_PATH: $SNAP/usr/local/libpng/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET:$SNAP/lib/$CRAFT_ARCH_TRIPLET:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET/pulseaudio${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+
+parts:
+  adlmapps:
+    plugin: dump
+    source: adlmapps25_25.0.3-1_amd64.deb
+    source-type: deb
+  adskflexnetclient:
+    plugin: dump
+    source: adskflexnetclient_11.16.0-1_amd64.deb
+    source-type: deb
+    stage-packages: 
+      - libc6
+      - libgcc-s1
+  adskflexnetserveripv6:
+    plugin: dump
+    source: adskflexnetserveripv6_11.18.0-1_amd64.deb
+    source-type: deb
+    stage-packages: 
+      - libc6
+      - libgcc-s1
+  adsklicensing:
+    plugin: dump
+    source: adsklicensing12.1.0.7121_0-1_amd64.deb
+    source-type: deb
+    stage-packages:
+      - lsb-core
+  maya2023:
+    plugin: dump
+    source: maya2023-64_2023.3-2073_amd64.deb
+    source-type: deb
+    stage-packages:
+      - libxcb-xinerama0
+      - libfam0
+      - libcurl4
+      - libpcre16-3
+      - libjpeg62
+      - libxm4
+      - xfonts-100dpi
+      - xfonts-75dpi
+      - x11-xserver-utils
+      - libxmuu1
+      - libgl1
+      - libx11-xcb1
+      - libxml2
+      - libatk1.0-0
+      - libcairo2
+      - libgtk2.0-0
+      - libgdk-pixbuf2.0-0
+      - libpango-1.0-0
+      - libpangocairo-1.0-0
+      - libpangoft2-1.0-0
+      - libglu1-mesa
+      - libgomp1
+      - libtiff5
+      - libltdl7
+      - libxv1
+      - libasound2
+      - libncurses5
+      - libtinfo5
+      - libxinerama1
+      - liborc-0.4-0
+      #- libpng12-0
+      #- libgd2
+      #- libgs9
+      - libgts-0.7-5
+      #- libpoppler-glib8
+      #- librsvg-2-2
+      - libxcomposite1
+      - libxdamage1
+      - libxtst6
+      - libnspr4
+      - libnss3
+      - libxcb-dri3-0
+      - libxkbcommon0
+      - libxp6
+    override-prime: |
+      craftctl default
+      ln -s $CRAFT_PRIME/usr/lib/x86_64-linux-gnu/libpcre16.so.3 $CRAFT_PRIME/usr/autodesk/maya2023/lib/libpcre16.so.0
+      ln -s $CRAFT_PRIME/usr/lib/x86_64-linux-gnu/libssl.so.1.1 $CRAFT_PRIME/usr/autodesk/maya2023/lib/libssl.so.10
+      ln -s $CRAFT_PRIME/usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 $CRAFT_PRIME/usr/autodesk/maya2023/lib/libcrypto.so.10
+      ln -s $CRAFT_PRIME/usr/lib/x86_64-linux-gnu/libXp.so.6 $CRAFT_PRIME/usr/autodesk/maya2023/lib/libXp.so.6
+      #xset +fp $CRAFT_PRIME/usr/share/fonts/X11/100dpi
+      #xset +fp $CRAFT_PRIME/usr/share/fonts/X11/75dpi
+      #xset fp rehash
+  libpng:
+    plugin: autotools
+    source: https://sourceforge.net/projects/libpng/files/libpng15/older-releases/1.5.15/libpng-1.5.15.tar.gz
+    autotools-configure-parameters:
+      - --prefix=/usr/local/libpng
+    build-packages:
+      - zlib1g-dev
+    override-prime: | 
+      craftctl default
+      mkdir -p $CRAFT_PRIME/usr/autodesk/maya2023/lib
+      ln -s $CRAFT_PRIME/usr/local/libpng/lib/libpng15.so.15 $CRAFT_PRIME/usr/autodesk/maya2023/lib/libpng15.so.15
+      
+apps:
+  maya-2023:
+    command: usr/autodesk/maya2023/bin/maya.bin
+    plugs:
+      - desktop
+      - desktop-legacy
+      - wayland
+      - x11
+      - opengl
