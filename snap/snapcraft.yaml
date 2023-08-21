@@ -45,9 +45,12 @@ parts:
     plugin: dump
     source: adsklicensing12.1.0.7121_0-1_amd64.deb
     source-type: deb
+    build-packages:
+      - lsb-core
     stage-packages:
       - lsb-core
   maya2023:
+    after: [ adlmapps, adskflexnetclient, adskflexnetserveripv6, adsklicensing ]
     plugin: dump
     source: maya2023-64_2023.3-2073_amd64.deb
     source-type: deb
@@ -98,6 +101,7 @@ parts:
       - libxp6
     override-prime: |
       craftctl default
+      #$CRAFT_PRIME/opt/Autodesk/AdskLicensing/12.1.0.7121/helper/AdskLicensingInstHelper register -pk 657O1 -pv 2023.0.0.F -el EN_US -cf $CRAFT_PRIME/var/opt/Autodesk/Adlm/Maya2023/MayaConfig.pit
       ln -s $CRAFT_PRIME/usr/lib/x86_64-linux-gnu/libpcre16.so.3 $CRAFT_PRIME/usr/autodesk/maya2023/lib/libpcre16.so.0
       ln -s $CRAFT_PRIME/usr/lib/x86_64-linux-gnu/libssl.so.1.1 $CRAFT_PRIME/usr/autodesk/maya2023/lib/libssl.so.10
       ln -s $CRAFT_PRIME/usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 $CRAFT_PRIME/usr/autodesk/maya2023/lib/libcrypto.so.10
@@ -116,7 +120,9 @@ parts:
       craftctl default
       mkdir -p $CRAFT_PRIME/usr/autodesk/maya2023/lib
       ln -s $CRAFT_PRIME/usr/local/libpng/lib/libpng15.so.15 $CRAFT_PRIME/usr/autodesk/maya2023/lib/libpng15.so.15
-      
+      mkdir $CRAFT_PRIME/usr/tmp
+      chmod 777 $CRAFT_PRIME/usr/tmp
+
 apps:
   maya-2023:
     command: usr/autodesk/maya2023/bin/maya.bin

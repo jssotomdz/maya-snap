@@ -1,15 +1,7 @@
 #!/bin/bash
 
-$SNAP/opt/Autodesk/AdskLicensingService --run
+$SNAP/opt/Autodesk/AdskLicensing/12.1.0.7121/helper/AdskLicensingInstHelper register -pk 657O1 -pv 2023.0.0.F -el EN_US -cf $SNAP/var/opt/Autodesk/Adlm/Maya2023/MayaConfig.pit
 
-$SNAP/opt/Autodesk/AdskLicensing/12.1.0.7121/helper/AdskLicensingInstHelper register -pk 657O1 -pv 2023.0.0.F -el EN_US -cf $SNAP/var/opt/Autodesk/Adlm/Maya2022/MayaConfig.pit
-
-xset +fp $SNAP/usr/share/fonts/X11/100dpi
-xset +fp $SNAP/usr/share/fonts/X11/75dpi
-xset fp rehash
-
-mkdir $SNAP/usr/tmp
-chmod 777 $SNAP/usr/tmp
-
+mkdir -p $HOME/maya/2023
 echo "MAYA_DISABLE_ADP=1" >> $HOME/maya/2023/Maya.env
 echo "LC_ALL=C" >> $HOME/maya/2023/Maya.env
